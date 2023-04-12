@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:realm/realm.dart';
-import 'package:realm_repo/realm/repositories/realm_repositories_impl.dart';
 import 'package:realm_repo/realm_repo.dart';
-
 
 import '../example/realm_model_example.dart';
 
@@ -11,16 +9,15 @@ class MyTestDB extends RealmOfflineDatabase {
   MyTestDB();
 
   final OfflineValueRealmRepository<MyRealmObject> testSingle =
-  OfflineValueRealmRepository(schemas: [MyRealmObject.schema]);
+      OfflineValueRealmRepository(schemas: [MyRealmObject.schema]);
   final OfflineCollectionRealmRepository<MyRealmObject> testCollection =
-  OfflineCollectionRealmRepository(schemas: [MyRealmObject.schema]);
+      OfflineCollectionRealmRepository(schemas: [MyRealmObject.schema]);
 }
 
 ObjectId testId = ObjectId();
 String ogName = "test";
 
 void main() {
-
   //Create or Insert
   //Single
   crudSingleTest();
@@ -82,7 +79,3 @@ void crudCollectionTest() {
     expect(db.testCollection.getAll().length, 0);
   });
 }
-
-
-
-

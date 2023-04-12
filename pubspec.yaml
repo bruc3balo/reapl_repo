@@ -1,6 +1,6 @@
 name: realm_repo
 description: A flutter project to make realm easy to work with by declaring a database, online or offline, and repositories for single objects and collections
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/bruc3balo/reapl_repo.git
 platforms:
   android:

@@ -1,5 +1,4 @@
 import 'package:realm/realm.dart';
-import 'package:realm_repo/realm/repositories/realm_repositories_impl.dart';
 import 'package:realm_repo/realm_repo.dart';
 
 import 'realm_model_example.dart';

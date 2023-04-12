@@ -39,6 +39,12 @@ flutter pub run realm generate
 
 RealmRepositories are collections self-contained as a type in the repositories
 
+Just add this import
+
+```dart
+import 'package:realm_repo/realm_repo.dart';
+```
+
 * OnlineValue
     
 To store a single object in cloud atlas
@@ -82,7 +88,7 @@ OfflineCollectionRealmRepository(schemas: [MyRealmObject.schema]);
 
 ### Realm Databases
 
-To implement a realm database you can implement the online or offline database in any class and declare
+To implement a realm database you can extend the RealmOnlineDatabase or RealmOfflineDatabase in any class and declare
 the respective repositories. This gives an advantage as it can make your database flexible in times of dilemma
 
 #### Online:
