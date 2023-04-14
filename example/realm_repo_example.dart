@@ -10,7 +10,6 @@ class MyRealmObject {
   late ObjectId id;
   late String name;
 }*/
-
 Future<void> main() async {
   ObjectId id = ObjectId();
   String name = "Realm Object";

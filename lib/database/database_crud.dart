@@ -13,7 +13,7 @@ abstract class CollectionCRUD<T> {
   List<T> getAll();
   T get(int index);
 
-  List<T> update({required int index, required T updated});
+  List<T> update({required dynamic id, required T updatedValue});
 
   List<T> delete(T t);
   List<T> deleteAll();

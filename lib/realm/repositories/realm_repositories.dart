@@ -17,7 +17,7 @@ abstract class SingleRealmCRUDRepository<T extends RealmObject>
   @override
   T? delete() {
     T? t = get();
-    _realm.deleteAll();
+    realm.write(() => realm.deleteAll<T>());
     return t;
   }
 
@@ -30,7 +30,7 @@ abstract class SingleRealmCRUDRepository<T extends RealmObject>
   T save(T t) {
     //open write transaction
     delete();
-    realm.write(() => realm.add(t));
+    realm.write<T>(() => realm.add<T>(t));
     return t;
   }
 }
@@ -49,13 +49,13 @@ abstract class CollectionRealmCRUDRepository<T extends RealmObject>
 
   @override
   List<T> delete(T t) {
-    realm.delete(t);
+    realm.write(() => realm.delete<T>(t));
     return getAll();
   }
 
   @override
   List<T> deleteAll() {
-    realm.deleteAll();
+    realm.write(() => realm.deleteAll<T>());
     return getAll();
   }
 
@@ -71,18 +71,23 @@ abstract class CollectionRealmCRUDRepository<T extends RealmObject>
 
   @override
   List<T> save(T t) {
-    realm.write(() => realm.add(t));
+    realm.write<T>(() => realm.add<T>(t));
     return getAll();
   }
 
   @override
   List<T> saveAll(List<T> t) {
-    realm.write(() => realm.addAll(t));
+    realm.write(() => realm.addAll<T>(t));
     return getAll();
   }
 
   @override
-  List<T> update({required int index, required T updated}) {
+  List<T> update({required dynamic id, required T updatedValue}) {
+    RealmObject? obj = realm.find(id);
+    if (obj == null) throw RealmException("Object of id $id not found");
+
+    realm.write(() => realm.add<T>(updatedValue, update: true));
+
     return getAll();
   }
 }

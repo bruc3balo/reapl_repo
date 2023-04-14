@@ -38,7 +38,7 @@ class OnlineValueRealmRepository<T extends RealmObject>
   @override
   void subscriptions() {
     realm.subscriptions.update((mutableSubscriptions) {
-      mutableSubscriptions.add(realm.all<T>());
+      mutableSubscriptions.add<T>(realm.all<T>());
     });
   }
 }
@@ -61,7 +61,7 @@ class OnlineCollectionRealmRepository<T extends RealmObject>
       required List<SchemaObject> schemas})
       : _appId = appId,
         _user = user,
-        super(realm: Realm(Configuration.local(schemas))) {
+        super(realm: Realm(Configuration.flexibleSync(user, schemas))) {
     subscriptions();
   }
 
