@@ -30,8 +30,7 @@ abstract class SingleRealmCRUDRepository<T extends RealmObject>
   T save(T t) {
     //open write transaction
     delete();
-    realm.write<T>(() => realm.add<T>(t));
-    return t;
+    return realm.write<T>(() => realm.add<T>(t));
   }
 }
 

@@ -9,6 +9,7 @@ Web support is not yet supported as realm doesn't support web
 ## Entities
 * To create a realm model annotate the class with **@RealmModel** and the name of the class should start 
 with an underscore '_' and a primary key annotation **@PrimaryKey** 
+* For 
 
 Example
 
@@ -45,9 +46,13 @@ Just add this import
 import 'package:realm_repo/realm_repo.dart';
 ```
 
-* OnlineValue
+1. **OnlineValue**
     
-To store a single object in cloud atlas
+* To store a single object in cloud atlas
+* FOR OnlineValueRealmRepository YOU SHOULD USE @MapTo('<insert schema name here>')
+and should be unique so as not to clash with other schemas
+
+ **Be careful**
 
 Example
 ```dart
@@ -56,7 +61,7 @@ OnlineValueRealmRepository(appId: appId, user: user, schemas: [MyRealmObject.sch
 ```
 
 
-* OfflineValue
+2. **OfflineValue**
 
 To store a single object in offline database
 
@@ -66,7 +71,7 @@ final OfflineValueRealmRepository<MyRealmObject> myUserDataRepository =
 OfflineValueRealmRepository(schemas: [MyRealmObject.schema]);
 ```
 
-* OnlineCollection
+3. **OnlineCollection**
 
 To store a collection of object in online database
 
@@ -76,7 +81,7 @@ late final OnlineCollectionRealmRepository<MyRealmObject> allUserDataRepository 
 OnlineCollectionRealmRepository(appId: appId, user: user, schemas: [MyRealmObject.schema]);
 ```
 
-* OfflineCollection
+4. **OfflineCollection**
 
 To store a collection of objects in offline database
 
@@ -96,6 +101,8 @@ the respective repositories. This gives an advantage as it can make your databas
 ```dart
 class MyOnlineDatabase extends RealmOnlineDatabase {
   MyOnlineDatabase({required super.appId});
+
+
 
   late final OnlineValueRealmRepository<MyRealmObject>
       myUserDataRepository = OnlineValueRealmRepository(
@@ -135,5 +142,27 @@ Future<void> main () async {
   /// Use offline database to store collections and single value objects
   MyOfflineDatabase offlineDb = MyOfflineDatabase();
   
+}
+```
+
+
+#### Schema
+
+```dart
+
+@RealmModel()
+class _MyRealmObject {
+  @PrimaryKey()
+  @MapTo('_id')
+  late ObjectId id;
+  late String name;
+
+  @override
+  int get hashCode => Object.hash(id, name);
+
+  @override
+  bool operator ==(Object other) {
+    return super.hashCode == other.hashCode;
+  }
 }
 ```

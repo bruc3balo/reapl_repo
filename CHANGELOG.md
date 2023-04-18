@@ -1,4 +1,6 @@
 
+## 0.0.3
+* Fixing of initializing of schema for user for online realm
 
 ## 0.0.2
 * Reducing usage of library to one import
