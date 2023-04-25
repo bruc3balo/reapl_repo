@@ -2,8 +2,7 @@ import 'package:realm/realm.dart';
 import 'package:realm_repo/database/database_crud.dart';
 import 'package:realm_repo/realm/crud/realm_crud.dart';
 
-abstract class SingleRealmCRUDRepository<T extends RealmObject>
-    implements SingleCRUD<T>, RealmCRUD<T> {
+abstract class SingleRealmCRUDRepository<T extends RealmObject> implements SingleCRUD<T>, RealmCRUD<T> {
   SingleRealmCRUDRepository({required Realm realm}) : _realm = realm;
 
   @override
@@ -32,10 +31,14 @@ abstract class SingleRealmCRUDRepository<T extends RealmObject>
     delete();
     return realm.write<T>(() => realm.add<T>(t));
   }
+
+  @override
+  void close() {
+    realm.close();
+  }
 }
 
-abstract class CollectionRealmCRUDRepository<T extends RealmObject>
-    implements CollectionCRUD<T>, RealmCRUD<T> {
+abstract class CollectionRealmCRUDRepository<T extends RealmObject> implements CollectionCRUD<T>, RealmCRUD<T> {
   CollectionRealmCRUDRepository({required Realm realm}) : _realm = realm;
 
   final Realm _realm;
@@ -59,8 +62,23 @@ abstract class CollectionRealmCRUDRepository<T extends RealmObject>
   }
 
   @override
+  T? queryOne(String query, {List<Object?> data = const []}) {
+    return realm.query<T>(query, data).firstOrNull;
+  }
+
+  @override
+  List<T> queryMany(String query, {List<Object?> data = const []}) {
+    return realm.query<T>(query, data).toList();
+  }
+
+  @override
   T get(int index) {
     return getAll()[index];
+  }
+
+  @override
+  T? findById(ObjectId id) {
+    return realm.find(id);
   }
 
   @override
@@ -69,24 +87,24 @@ abstract class CollectionRealmCRUDRepository<T extends RealmObject>
   }
 
   @override
-  List<T> save(T t) {
-    realm.write<T>(() => realm.add<T>(t));
-    return getAll();
+  T save(T t) {
+    t = realm.write<T>(() => realm.add<T>(t));
+    return t;
   }
 
   @override
-  List<T> saveAll(List<T> t) {
+  void saveAll(List<T> t) {
     realm.write(() => realm.addAll<T>(t));
+  }
+
+  @override
+  List<T> update({required T updatedValue}) {
+    realm.write(() => updatedValue);
     return getAll();
   }
 
   @override
-  List<T> update({required dynamic id, required T updatedValue}) {
-    RealmObject? obj = realm.find(id);
-    if (obj == null) throw RealmException("Object of id $id not found");
-
-    realm.write(() => realm.add<T>(updatedValue, update: true));
-
-    return getAll();
+  void close() {
+    realm.close();
   }
 }

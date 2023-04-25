@@ -4,4 +4,5 @@ import 'package:realm/realm.dart';
 abstract class RealmCRUD<T extends RealmObject> {
   Realm get realm;
   RealmResults<T> get items;
+  void close();
 }

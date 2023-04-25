@@ -76,20 +76,25 @@ Future<void> main() async {
 class MyOnlineDatabase extends RealmOnlineDatabase {
   MyOnlineDatabase({required super.appId});
 
-  late final OnlineValueRealmRepository<MyRealmObject> myUserDataRepository =
-      OnlineValueRealmRepository(
-          appId: appId, user: user, schemas: [MyRealmObject.schema]);
-  late final OnlineCollectionRealmRepository<MyRealmObject>
-      allUserDataRepository = OnlineCollectionRealmRepository(
-          appId: appId, user: user, schemas: [MyRealmObject.schema]);
+  late final OnlineValueRealmRepository<MyRealmObject> myUserDataRepository = OnlineValueRealmRepository(appId: appId, user: user, schemas: [MyRealmObject.schema]);
+  late final OnlineCollectionRealmRepository<MyRealmObject> allUserDataRepository = OnlineCollectionRealmRepository(appId: appId, user: user, schemas: [MyRealmObject.schema]);
+
+  @override
+  void close() {
+    myUserDataRepository.close();
+    allUserDataRepository.close();
+  }
 }
 
 /// Same as described in MyOnlineDatabase but without appId
 class MyOfflineDatabase extends RealmOfflineDatabase {
   MyOfflineDatabase();
 
-  final OfflineValueRealmRepository<MyRealmObject> myUserDataRepository =
-      OfflineValueRealmRepository(schemas: [MyRealmObject.schema]);
-  final OfflineCollectionRealmRepository<MyRealmObject> allUserDataRepository =
-      OfflineCollectionRealmRepository(schemas: [MyRealmObject.schema]);
+  final OfflineValueRealmRepository<MyRealmObject> myUserDataRepository = OfflineValueRealmRepository(schemas: [MyRealmObject.schema], schemaVersion: 1);
+  final OfflineCollectionRealmRepository<MyRealmObject> allUserDataRepository = OfflineCollectionRealmRepository(schemas: [MyRealmObject.schema]);
+
+  @override
+  void close() {
+    myUserDataRepository.close();
+  }
 }

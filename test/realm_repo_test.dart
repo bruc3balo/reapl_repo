@@ -8,10 +8,14 @@ import '../example/realm_model_example.dart';
 class MyTestDB extends RealmOfflineDatabase {
   MyTestDB();
 
-  final OfflineValueRealmRepository<MyRealmObject> testSingle =
-      OfflineValueRealmRepository(schemas: [MyRealmObject.schema]);
-  final OfflineCollectionRealmRepository<MyRealmObject> testCollection =
-      OfflineCollectionRealmRepository(schemas: [MyRealmObject.schema]);
+  final OfflineValueRealmRepository<MyRealmObject> testSingle = OfflineValueRealmRepository(schemas: [MyRealmObject.schema], schemaVersion: 2);
+  final OfflineCollectionRealmRepository<MyRealmObject> testCollection = OfflineCollectionRealmRepository(schemas: [MyRealmObject.schema]);
+
+  @override
+  void close() {
+    testSingle.realm.close();
+    testCollection.realm.close();
+  }
 }
 
 ObjectId testId = ObjectId();

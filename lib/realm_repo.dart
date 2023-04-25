@@ -10,12 +10,8 @@ import 'package:realm_repo/realm/repositories/realm_repositories.dart';
 /// SINGLE REPOSITORIES ///
 
 //Single Online
-class OnlineValueRealmRepository<T extends RealmObject>
-    extends SingleRealmCRUDRepository<T> implements OnlineRealmConnection {
-  OnlineValueRealmRepository(
-      {required String appId,
-      required User user,
-      required List<SchemaObject> schemas})
+class OnlineValueRealmRepository<T extends RealmObject> extends SingleRealmCRUDRepository<T> implements OnlineRealmConnection {
+  OnlineValueRealmRepository({required String appId, required User user, required List<SchemaObject> schemas})
       : _appId = appId,
         _user = user,
         super(realm: Realm(Configuration.flexibleSync(user, schemas))) {
@@ -44,21 +40,15 @@ class OnlineValueRealmRepository<T extends RealmObject>
 }
 
 //Single Offline
-class OfflineValueRealmRepository<T extends RealmObject>
-    extends SingleRealmCRUDRepository<T> {
-  OfflineValueRealmRepository({required List<SchemaObject> schemas})
-      : super(realm: Realm(Configuration.local(schemas)));
+class OfflineValueRealmRepository<T extends RealmObject> extends SingleRealmCRUDRepository<T> {
+  OfflineValueRealmRepository({required List<SchemaObject> schemas, required int schemaVersion}) : super(realm: Realm(Configuration.local(schemas, schemaVersion: schemaVersion)));
 }
 
 /// COLLECTION REPOSITORIES ///
 
 // Collection Online
-class OnlineCollectionRealmRepository<T extends RealmObject>
-    extends CollectionRealmCRUDRepository<T> implements OnlineRealmConnection {
-  OnlineCollectionRealmRepository(
-      {required String appId,
-      required User user,
-      required List<SchemaObject> schemas})
+class OnlineCollectionRealmRepository<T extends RealmObject> extends CollectionRealmCRUDRepository<T> implements OnlineRealmConnection {
+  OnlineCollectionRealmRepository({required String appId, required User user, required List<SchemaObject> schemas})
       : _appId = appId,
         _user = user,
         super(realm: Realm(Configuration.flexibleSync(user, schemas))) {
@@ -86,10 +76,8 @@ class OnlineCollectionRealmRepository<T extends RealmObject>
 }
 
 // Collection Offline
-class OfflineCollectionRealmRepository<T extends RealmObject>
-    extends CollectionRealmCRUDRepository<T> {
-  OfflineCollectionRealmRepository({required List<SchemaObject> schemas})
-      : super(realm: Realm(Configuration.local(schemas)));
+class OfflineCollectionRealmRepository<T extends RealmObject> extends CollectionRealmCRUDRepository<T> {
+  OfflineCollectionRealmRepository({required List<SchemaObject> schemas}) : super(realm: Realm(Configuration.local(schemas)));
 }
 
 /// DATABASES ///
@@ -106,9 +94,9 @@ abstract class RealmOnlineDatabase implements OnlineRealmDatabase {
   @override
   Future<void> init() async {
     _app = App(AppConfiguration(_appId));
-    _user = app.currentUser != null
-        ? app.currentUser!
-        : await app.logIn(Credentials.anonymous());
+    _user = app.currentUser != null ? app.currentUser! : await app.logIn(Credentials.anonymous());
+    var state = _user.state;
+    print('State : ${state.name}');
   }
 
   //App Id
@@ -125,6 +113,12 @@ abstract class RealmOnlineDatabase implements OnlineRealmDatabase {
 
   //User
   late final User _user;
+
+  User switchUser(User user) {
+    _user = user;
+    _app.switchUser(user);
+    return user;
+  }
 
   @override
   User get user => _user;
